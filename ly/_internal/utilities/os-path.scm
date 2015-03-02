@@ -60,6 +60,7 @@
       path))
 
 (define-public (join-unix-path path-list)
+  "Returns a Unix formatted path string from a list."
   (string-join path-list "/"))
 
 (define-public (get-cwd-list)
