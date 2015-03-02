@@ -4,8 +4,10 @@
 
 \include "openlilylib"
 %\loadModule "comptools/partial-compilation.ily"
-\registerOption documentation.include-file "comptools/conditional-breaks.ily"
-\loadModule "_internal/doc-include/usage-example.ily"
+%\registerOption documentation.include-file #'(comptools conditional-breaks)
+%\loadModule internal.doc-include.usage-example
+
+\loadModule comptools.partial-compilation
 
 % Define a set with original breaks (barnumbers)
 % Entries can also be a list with barnumber and fraction

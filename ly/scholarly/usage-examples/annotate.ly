@@ -2,7 +2,9 @@
 
 \include "openlilylib"
 \registerOption documentation.include-file "scholarly/annotate"
-\loadModule "_internal/doc-include/usage-example.ily"
+%\loadModule internal.doc-include.usage-example
+
+\loadModule scholarly.annotate
 
 \markup \vspace #1
 

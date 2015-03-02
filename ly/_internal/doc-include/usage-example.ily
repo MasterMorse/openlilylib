@@ -6,7 +6,7 @@
 #(define include-clause
    (format "\\loadModule \"~a\"" include-name))
 
-\loadModule #include-name
+\loadModule \include-name
 
 #(ly:set-option 'relative-includes #t)
 

@@ -32,7 +32,7 @@
 %%% First of all, you have to include the file that provides the
 %%% public interface
 \include "openlilylib"
-\loadModule "gridly"
+\loadModule #'gridly
 
 %%% Grid initialization
 %%% -------------------

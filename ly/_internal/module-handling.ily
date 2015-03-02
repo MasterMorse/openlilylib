@@ -69,9 +69,12 @@ loadModule =
    "Load an openLilyLib module if it has not been already loaded."
    (let*
     ((module-path
+      ;; Create a path to the module by converting each symbol to a string
+      ;; while treating the first element separately and massaging its
+      ;; value if it should be 'internal' (the underscore of the directory
+      ;; name can't be part of a symbol list).
       (append
        (let ((lib-str (symbol->string (first path))))
-         (ly:message (format "lib-str: ~a" lib-str))
          (if (string=? "internal" lib-str)
              (list "_internal")
              (list lib-str)))
@@ -102,18 +105,18 @@ loadModule =
     (ly:message (format "load-path: ~a" load-path))
     (cond
      ((null? load-path)
-      (oll:warn "module not found: ~a" path))
+      (oll:warn "module not found: ~a" (join-dot-path module-path)))
      ((member module-path oll-loaded-modules)
-      (oll:log "module ~a already loaded. Skipping." load-path))
+      (oll:log "module ~a already loaded. Skipping." (join-dot-path module-path)))
      ((list? load-path)
-      (oll:warn "Loading of Scheme modules not supported yet. Requested: ~a" module-path))
+      (oll:warn "Loading of Scheme modules not supported yet. Requested: ~a" (join-dot-path module-path)))
      ((string? load-path)
       (begin
        (ly:message (format "try loading ~a" load-path))
        ;; first register/load the library
        #{ \registerLibrary #lib #}
        ;; then load the requested module
-       (oll:log "load module ~a" path)
+       (oll:log "load module ~a" (join-dot-path module-path))
        (ly:parser-include-string parser
          (format "\\include \"~a\"" load-path))
        ;; finally add to loaded modulex

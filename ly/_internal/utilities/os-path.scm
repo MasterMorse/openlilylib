@@ -59,6 +59,9 @@
       (string-split path os-path-separator)
       path))
 
+(define-public (join-unix-path path-list)
+  (string-join path-list "/"))
+
 (define-public (get-cwd-list)
   "Return the current working directory as a list of strings."
   (split-path (getcwd)))
