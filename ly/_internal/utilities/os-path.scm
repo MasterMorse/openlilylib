@@ -63,6 +63,13 @@
   "Returns a Unix formatted path string from a list."
   (string-join path-list "/"))
 
+(define-public (join-dot-path path)
+  "Returns a string in dot-notation (to be displayed).
+   Takes a list with string elements or an
+   OS independent path string."
+  (let ((path-list (split-path path)))
+    (string-join path-list ".")))
+
 (define-public (get-cwd-list)
   "Return the current working directory as a list of strings."
   (split-path (getcwd)))
