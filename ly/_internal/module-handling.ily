@@ -42,6 +42,7 @@ registerLibrary =
     this is loaded (library initialized) too."
    (if (not (member lib oll-loaded-libraries))
        (begin
+        (oll:log "Registering library ~a" lib)
         (set! oll-loaded-libraries
               (append oll-loaded-libraries
                 `(,lib)))
@@ -64,36 +65,77 @@ registerLibrary =
 % path we assume it is a directory and try to load a file "__main__.ily"
 % inside that directory.
 loadModule =
-#(define-void-function (parser location path)(string?)
+#(define-void-function (parser location path)(symbol-list?)
    "Load an openLilyLib module if it has not been already loaded."
    (let*
-    ((path-list (string-split path #\/))
-     (lib (first path-list))
-     (last-elt
-      (if (string-index (last path-list) #\.)
-          ;; if the last element is a file (with extension)
-          ;; we don't do anything, otherwise we append the
-          ;; default "module name"
-          '()
-          '("__main__.ily")))
-     (append-path (string-join
-                   (append path-list last-elt) "/"))
-     (load-path (string-append
-                 #{ \getOption global.root-path #}
-                 "/"
-                 append-path)))
-    ;; try to load the file if it isn't already present
-    (if (member load-path oll-loaded-modules)
-        (oll:log "module ~a already loaded. Skipping." load-path)
-        (if (file-exists? load-path)
-            (begin
-             (oll:log "Registering library ~a" (first path-list))
-             ;; first register/load the library
-             #{ \registerLibrary #(first path-list) #}
-             ;; then load the requested module
-             (oll:log "load module ~a" load-path)
-             (ly:parser-include-string parser
-               (format "\\include \"~a\"" load-path))
-             (set! oll-loaded-modules
-                   (append! oll-loaded-modules `(,load-path))))
-            (oll:warn "module not found: ~a" load-path)))))
+    ((module-path
+      (append
+       (let ((lib-str (symbol->string (first path))))
+         (ly:message (format "lib-str: ~a" lib-str))
+         (if (string=? "internal" lib-str)
+             (list "_internal")
+             (list lib-str)))
+       (map
+        (lambda (p)
+          (symbol->string p))
+        (cdr path))))
+     (lib (first module-path))
+     (module-name (last module-path))
+     (module-basename
+      (string-append
+       #{ \getOption global.root-path #}
+       (join-unix-path module-path)))
+     (load-path
+      (cond ((file-exists? (string-append module-basename ".ily"))
+             (string-append module-basename ".ily"))
+        ((file-exists? (string-append module-basename ".scm"))
+         load-path)
+        ((file-exists? (string-append module-basename "/__main__.ily"))
+         (string-append module-basename "/__main__.ily"))
+        (else '())))
+
+     )
+    (ly:message (format "Path: ~a" path))
+    (ly:message (format "Lib: ~a" lib))
+    (ly:message (format "module-path: ~a" module-path))
+    (ly:message (format "module-basename: ~a" module-basename))
+    (ly:message (format "load-path: ~a" load-path))
+    (cond
+     ((null? load-path)
+      (oll:warn "module not found: ~a" path))
+     ((member module-path oll-loaded-modules)
+      (oll:log "module ~a already loaded. Skipping." load-path))
+     ((list? load-path)
+      (oll:warn "Loading of Scheme modules not supported yet. Requested: ~a" module-path))
+     ((string? load-path)
+      (begin
+       (ly:message (format "try loading ~a" load-path))
+       ;; first register/load the library
+       #{ \registerLibrary #lib #}
+       ;; then load the requested module
+       (oll:log "load module ~a" path)
+       (ly:parser-include-string parser
+         (format "\\include \"~a\"" load-path))
+       ;; finally add to loaded modulex
+       (set! oll-loaded-modules
+             (append! oll-loaded-modules `(,module-path))))))))
+
+%{
+
+      ;; try to load the file if it isn't already present
+      (if (member module-path oll-loaded-modules)
+          (oll:log "module ~a already loaded. Skipping." load-path)
+          (if (file-exists? load-path)
+              (begin
+               ;(oll:log "Registering library ~a" (first path-list))
+               ;; first register/load the library
+               #{ \registerLibrary #(first path-list) #}
+               ;; then load the requested module
+               (oll:log "load module ~a" load-path)
+               (ly:parser-include-string parser
+                 (format "\\include \"~a\"" load-path))
+               (set! oll-loaded-modules
+                     (append! oll-loaded-modules `(,load-path))))
+              (oll:warn "module not found: ~a" load-path)))))
+
+%}
