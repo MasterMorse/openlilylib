@@ -3,8 +3,9 @@
 \version "2.18.0"
 
 \include "openlilylib"
-\registerOption documentation.include-file "comptools/partial-compilation.ily"
-\loadModule "_internal/doc-include/usage-example.ily"
+%\registerOption documentation.include-file comptools.partial-compilation
+%\loadModule internal.doc-include.usage-example
+\loadModule comptools.partial-compilation
 
 \include "comptools-test-data.ily"
 

@@ -47,7 +47,7 @@
 
 % Include factored out functionality
 \include "config.ily"
-\loadModule "utility/rhythmic-location.ily"
+\loadModule utility.rhythmic-location
 \include "sort.ily"
 \include "format.ily"
 \include "export.ily"
