@@ -123,11 +123,11 @@ loadModule =
                     (begin
                      (ly:message "start registering library ~a" lib-init-file)
                      (oll:log "initialize library \"~a\"" lib)
-                     (ly:parser-include-string parser
-                       (format "\\sourcefilename \"~A\" \\sourcefileline 0\n~A"
-                         lib-init-file (ly:gulp-file lib-init-file)))
                      ;(ly:parser-include-string parser
-                     ;  (format "\\include \"~a\"" lib-init-file))
+                     ;  (format "\\sourcefilename \"~A\" \\sourcefileline 0\n~A"
+                     ;    lib-init-file (ly:gulp-file lib-init-file)))
+                     (ly:parser-include-string parser
+                       (format "\\include \"~a\"" lib-init-file))
                      )))             ;; then load the requested module
               (oll:log "load module ~a" load-path)
               (ly:parser-include-string parser
