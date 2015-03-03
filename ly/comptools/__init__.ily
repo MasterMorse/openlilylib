@@ -5,17 +5,19 @@
 % break sets, e.g. corresponding to different manuscripts
 \registerOption comptools.break-sets #'()
 
+#(ly:message "This is the comptools library init.")
+
 % Register a named set of breaks that can be referenced later
-#(define registerBreakSet
-   (define-void-function (parser location name)
+registerBreakSet =
+   #(define-void-function (parser location name)
    (symbol?)
    (let ((base-path `(comptools break-sets ,name)))
      #{ \setChildOption #base-path #'line-breaks #'() #}
      #{ \setChildOption #base-path #'page-breaks #'() #}
-     #{ \setChildOption #base-path #'page-turns #'() #})))
+     #{ \setChildOption #base-path #'page-turns #'() #}))
 
-#(define setConditionalBreaks
-(define-void-function (parser location set type breaks)
+setConditionalBreaks =
+#(define-void-function (parser location set type breaks)
    (symbol? symbol? list?)
-   #{ \setChildOption #`(comptools break-sets ,set) #type #breaks #}))
+   #{ \setChildOption #`(comptools break-sets ,set) #type #breaks #})
 

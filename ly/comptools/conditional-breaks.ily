@@ -25,10 +25,12 @@
   }
 }
 
-
+#(ly:message "This is conditional-breaks.ily")
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % here goes the snippet: %
 %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#(ly:message "this is conditional-breaks.ily")
 
 % This functionality relies on the edition-engraver
 % which is also part of openLilyLib

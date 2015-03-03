@@ -71,10 +71,12 @@
 % because that's inside the desired root directory
 setRootPath =
 #(define-void-function (parser location)()
-   (let* ((path (location-extract-path location)))
+   (let* ((path-string (location-extract-path location))
+          (path (split-path path-string)))
      #{ \registerOption global.root-path #path #}
-     (if (not (member path %load-path))
-         (set! %load-path `(,path ,@%load-path)))))
+     (if (not (member path-string %load-path))
+         (set! %load-path `(,path-string ,@%load-path)))
+     (ly:message path-string)))
 
 
 % Functionality to load and manage modules

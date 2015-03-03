@@ -34,10 +34,8 @@
 #(ly:message "\nModule \"example\" loaded through openLilyLib!\n")
 #(ly:message (format "I am ~a" #{ \thisFile #}))
 
-
-
 #(ly:message "\nLoad a file from within the module.\n")
-\loadModule "example/load-test.ily"
+\loadModule example.load-test
 
 #(display
   (format "Use variable in __main__ that was defined in __init__: ~a" in-init))
